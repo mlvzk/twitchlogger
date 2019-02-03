@@ -22,7 +22,7 @@ func main() {
 	flag.BoolVar(&loop, "loop", false, "")
 	flag.Parse()
 
-	twitchStreamsPager := twitch_log.NewTwitchStreamsPager(language, clientId)
+	twitchStreamsPager := twitch_logger.NewTwitchStreamsPager(language, clientId)
 
 	streamSet := make(map[int]bool)
 	csvWriter := csv.NewWriter(os.Stdout)
