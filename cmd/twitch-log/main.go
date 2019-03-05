@@ -13,6 +13,7 @@ import (
 func main() {
 	var wg sync.WaitGroup
 	scanner := bufio.NewScanner(os.Stdin)
+	pongMsg := []byte("PONG :tmi.twitch.tv\r\n")
 
 	for {
 		end, channels := readBulk(scanner, 400)
@@ -50,7 +51,6 @@ func main() {
 
 				removedCount := deleteLastLine(buffer, n)
 				buffer[n-removedCount] = '\n'
-				log.Println("n:", n)
 				os.Stdout.Write(buffer[0:n-removedCount+1])
 
 				for i := 0; i < n; i++ {
@@ -59,7 +59,7 @@ func main() {
 
 				time.Sleep(1000 * time.Millisecond)
 
-				_, err = socket.Write([]byte("PONG :tmi.twitch.tv\r\n"))
+				_, err = socket.Write(pongMsg)
 				if err != nil {
 					log.Println("Error on sending PONG:", err)
 					break
