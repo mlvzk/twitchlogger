@@ -6,8 +6,8 @@ import (
 	"net"
 	"os"
 	"strings"
-	"time"
 	"sync"
+	"time"
 )
 
 func main() {
@@ -51,11 +51,7 @@ func main() {
 
 				removedCount := deleteLastLine(buffer, n)
 				buffer[n-removedCount] = '\n'
-				os.Stdout.Write(buffer[0:n-removedCount+1])
-
-				for i := 0; i < n; i++ {
-					buffer[i] = 0
-				}
+				os.Stdout.Write(buffer[0 : n-removedCount+1])
 
 				time.Sleep(1000 * time.Millisecond)
 
@@ -82,16 +78,13 @@ func deleteLastLine(buffer []byte, length int) int {
 
 	for i := length - 1; i >= 0; i-- {
 		if buffer[i] == '\n' {
-			buffer[i] = 0
 			removedCount++
 			if buffer[i-1] == '\r' {
-				buffer[i-1] = 0
 				removedCount++
 			}
 			break
 		}
 
-		buffer[i] = 0
 		removedCount++
 	}
 
