@@ -5,8 +5,8 @@ import (
 	"flag"
 	"log"
 	"os"
-	"time"
 	"strconv"
+	"time"
 
 	"github.com/mlvzk/twitch_logger"
 )

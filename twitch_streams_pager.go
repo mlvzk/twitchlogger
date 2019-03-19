@@ -1,10 +1,10 @@
 package twitch_logger
 
 import (
-	"net/http"
 	"encoding/json"
-	"strconv"
 	"io/ioutil"
+	"net/http"
+	"strconv"
 )
 
 var (
@@ -35,15 +35,15 @@ type TwitchStreamsPager struct {
 
 func NewTwitchStreamsPager(language, clientId string) *TwitchStreamsPager {
 	return &TwitchStreamsPager{
-		offset: 0,
-		limit: 100,
+		offset:   0,
+		limit:    100,
 		language: language,
 		clientId: clientId,
 	}
 }
 
 func (pager *TwitchStreamsPager) Next() ([]TwitchStream, bool, error) {
-	request, err := http.NewRequest("GET", apiBaseURL+"/streams/?language=" + pager.language + "&limit="+strconv.Itoa(pager.limit)+"&offset="+strconv.Itoa(pager.offset), nil)
+	request, err := http.NewRequest("GET", apiBaseURL+"/streams/?language="+pager.language+"&limit="+strconv.Itoa(pager.limit)+"&offset="+strconv.Itoa(pager.offset), nil)
 	if err != nil {
 		return []TwitchStream{}, false, err
 	}
