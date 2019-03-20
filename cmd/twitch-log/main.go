@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"io"
 	"log"
 	"net"
 	"os"
@@ -10,10 +11,19 @@ import (
 	"time"
 )
 
+type output struct {
+	writer io.Writer
+	lock   sync.Mutex
+}
+
 func main() {
 	var wg sync.WaitGroup
 	scanner := bufio.NewScanner(os.Stdin)
 	pongMsg := []byte("PONG :tmi.twitch.tv\r\n")
+	output := output{
+		os.Stdout,
+		sync.Mutex{},
+	}
 
 	for {
 		end, channels := readBulk(scanner, 400)
@@ -34,7 +44,7 @@ func main() {
 
 		_, err = socket.Write([]byte(joinCommand))
 		if err != nil {
-			log.Println("Error on sending join command:", err)
+			log.Println("Error on sending join command", "channels:", channels, "err:", err)
 			continue
 		}
 
@@ -45,13 +55,15 @@ func main() {
 			for {
 				n, err := socket.Read(buffer)
 				if err != nil {
-					log.Println("Error on reading from connection:", err)
+					log.Println("Error on reading from connection", "channels handled by this socket:", channels, "buffer:", string(buffer), "n:", n, "err:", err)
 					break
 				}
 
 				removedCount := deleteLastLine(buffer, n)
 				buffer[n-removedCount] = '\n'
-				os.Stdout.Write(buffer[0 : n-removedCount+1])
+				output.lock.Lock()
+				output.writer.Write(buffer[0 : n-removedCount+1])
+				output.lock.Unlock()
 
 				time.Sleep(1000 * time.Millisecond)
 
