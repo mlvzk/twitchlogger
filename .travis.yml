@@ -1,0 +1,17 @@
+language: go
+go: "1.12"
+
+before_deploy:
+  - CGO_ENABLED=0 GOOS=linux go build -a -ldflags="-s -w" -installsuffix cgo -o twitch-channels cmd/twitch-channels/main.go
+  - CGO_ENABLED=0 GOOS=linux go build -a -ldflags="-s -w" -installsuffix cgo -o twitch-log cmd/twitch-log/main.go
+deploy:
+  provider: releases
+  api_key:
+    secure: qlIZ/nDmghUoEAGtPOk8Xa8K4yZury9bigtysGkglbHk+iGRlrG2pviCC1Ea8Feqf+JAdTGRgGQmvRGx4Ldl6VRPhIphtZ//ymrV26GdYj6KsDcr2VzBjYBN+P33EX2xYlkblRu66zkH9qIJqh59OddxmOf7hIYndB9gK39Kf8BXeKrG2taeYZTqOqQ122Xc7iMhHhY1VTfnl3Bgv0lHEc4GdCLKEdRgcxyN+98PHIn8ByqTczpFNgSwiq71XnhS2plvmbEPTZC/wkXprtY8RxXOLnRUIEm6tgo6KbVSu5mx0/VhlvJNy2zzXJYjup9F+4g8HELeQ4Ki97pKbL0KIfFMFdPwedy+E3l9RjrvfYqX72eqpJkC+rd7bjWHX4zvNmWQzm0sAX9JsH7zPpOkKtZZ5+MGGz7k+X2a0m76SnUtJEcuayPFtU2mYmGr2zbNrOUgY0cTU5WSH5ZBzyFbq/3oGMWx6R1x6pTl7vSiA5qFgD6XtJPwxjnqKUQaKytquCS9fo/JfwoHABBGUzh/gNdp4e+iWS7EX67N4qM1P/li/UmrW5YL9SFxxQtyGgW+m+Abjd2G66sK5S0z5XlCilas7bZ8ey78l34fDBi86CPM4VkmRfSD/49yN7zYNnWbNFlUoNX5kwhj9iUJUiX9Uqht19zuCnL/pPTJSjlR9pA=
+  skip_cleanup: true
+  file:
+    - twitch-channels
+    - twitch-log
+  on:
+    repo: mlvzk/twitch_logger
+    tags: true
