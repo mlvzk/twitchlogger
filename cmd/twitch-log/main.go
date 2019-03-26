@@ -11,18 +11,18 @@ import (
 	"time"
 )
 
-type output struct {
-	writer io.Writer
-	lock   sync.Mutex
+type safeOutput struct {
+	sync.Mutex
+	io.Writer
 }
 
 func main() {
 	var wg sync.WaitGroup
 	scanner := bufio.NewScanner(os.Stdin)
 	pongMsg := []byte("PONG :tmi.twitch.tv\r\n")
-	output := output{
-		os.Stdout,
+	output := safeOutput{
 		sync.Mutex{},
+		os.Stdout,
 	}
 
 	for {
@@ -61,9 +61,9 @@ func main() {
 
 				removedCount := deleteLastLine(buffer, n)
 				buffer[n-removedCount] = '\n'
-				output.lock.Lock()
-				output.writer.Write(buffer[0 : n-removedCount+1])
-				output.lock.Unlock()
+				output.Lock()
+				output.Write(buffer[0 : n-removedCount+1])
+				output.Unlock()
 
 				time.Sleep(1000 * time.Millisecond)
 

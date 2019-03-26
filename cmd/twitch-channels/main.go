@@ -12,17 +12,13 @@ import (
 )
 
 func main() {
-	var language string
-	var clientId string
-	var minViewers int
-	var loop bool
-	flag.StringVar(&language, "language", "", "show only streams of specified locale ID string, empty for all languages")
-	flag.StringVar(&clientId, "client_id", "q6batx0epp608isickayubi39itsckt", "Client ID for the Twitch API")
-	flag.IntVar(&minViewers, "min", 10, "skip channels with less viewers than min")
-	flag.BoolVar(&loop, "loop", false, "")
+	language := flag.String("language", "", "show only streams of specified locale ID string, empty for all languages")
+	clientID := flag.String("client_id", "q6batx0epp608isickayubi39itsckt", "Client ID for the Twitch API")
+	minViewers := flag.Int("min", 10, "skip channels with less viewers than min")
+	loop := flag.Bool("loop", false, "")
 	flag.Parse()
 
-	twitchStreamsPager := twitch_logger.NewTwitchStreamsPager(language, clientId)
+	twitchStreamsPager := twitch_logger.NewTwitchStreamsPager(*language, *clientID)
 
 	streamSet := make(map[int]bool)
 	csvWriter := csv.NewWriter(os.Stdout)
@@ -33,7 +29,7 @@ func main() {
 		}
 
 		for _, stream := range streams {
-			if stream.Viewers < minViewers {
+			if stream.Viewers < *minViewers {
 				end = true
 				break
 			}
@@ -47,7 +43,7 @@ func main() {
 		csvWriter.Flush()
 
 		if end {
-			if loop {
+			if *loop {
 				twitchStreamsPager.Reset()
 				time.Sleep(120 * time.Second)
 			} else {
