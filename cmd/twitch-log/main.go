@@ -26,7 +26,7 @@ func main() {
 	}
 
 	for {
-		end, channels := readBulk(scanner, 400)
+		channels, end := readBulk(scanner, 400)
 		log.Println("channels", len(channels), "end", end)
 		joinCommand := "JOIN #" + strings.Join(channels, ",#") + "\r\n"
 
@@ -108,16 +108,16 @@ type Scanner interface {
 	Text() string
 }
 
-func readBulk(scanner Scanner, length int) (bool, []string) {
+func readBulk(scanner Scanner, length int) ([]string, bool) {
 	a := make([]string, length)
 
 	for i := 0; i < length; i++ {
 		if !scanner.Scan() {
-			return true, a
+			return a[0:i], true
 		}
 
 		a[i] = scanner.Text()
 	}
 
-	return false, a
+	return a, false
 }
