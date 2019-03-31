@@ -103,6 +103,7 @@ func deleteLastLine(buffer []byte, length int) int {
 	return removedCount
 }
 
+// Scanner interface, only needs to implement Scan and Text
 type Scanner interface {
 	Scan() bool
 	Text() string

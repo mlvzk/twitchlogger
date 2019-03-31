@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"strconv"
+	"sync/atomic"
 )
 
 var (
@@ -22,33 +23,37 @@ type TwitchStream struct {
 }
 
 type TwitchChannel struct {
-	Id   int    `json:"_id"`
+	ID   int    `json:"_id"`
 	Name string `json:"name"`
 }
 
 type TwitchStreamsPager struct {
-	offset   int
-	limit    int
+	offset   int32
+	limit    int32
 	language string
-	clientId string
+	clientID string
 }
 
-func NewTwitchStreamsPager(language, clientId string) *TwitchStreamsPager {
+// NewTwitchStreamsPager returns the initial TwitchStreamsPager
+func NewTwitchStreamsPager(language, clientID string) *TwitchStreamsPager {
 	return &TwitchStreamsPager{
 		offset:   0,
 		limit:    100,
 		language: language,
-		clientId: clientId,
+		clientID: clientID,
 	}
 }
 
+// Next returns the TwitchStreams for the current page and progresses.
+// bool is true if it hits the end.
 func (pager *TwitchStreamsPager) Next() ([]TwitchStream, bool, error) {
-	request, err := http.NewRequest("GET", apiBaseURL+"/streams/?language="+pager.language+"&limit="+strconv.Itoa(pager.limit)+"&offset="+strconv.Itoa(pager.offset), nil)
+	offset := atomic.SwapInt32(&pager.offset, pager.offset+100)
+	request, err := http.NewRequest("GET", apiBaseURL+"/streams/?language="+pager.language+"&limit="+strconv.Itoa(int(pager.limit))+"&offset="+strconv.Itoa(int(offset)), nil)
 	if err != nil {
 		return []TwitchStream{}, false, err
 	}
 
-	request.Header.Add("Client-ID", pager.clientId)
+	request.Header.Add("Client-ID", pager.clientID)
 	request.Header.Add("Accept", "application/vnd.twitchtv.v5+json")
 	response, err := (&http.Client{}).Do(request)
 	if err != nil {
@@ -65,13 +70,14 @@ func (pager *TwitchStreamsPager) Next() ([]TwitchStream, bool, error) {
 
 	pager.offset += pager.limit
 
-	if twitchStreamsResponse.Total <= pager.offset {
+	if twitchStreamsResponse.Total <= int(pager.offset) {
 		return twitchStreamsResponse.Streams, true, nil
 	}
 
 	return twitchStreamsResponse.Streams, false, nil
 }
 
+// Reset resets the pager to it's initial position
 func (pager *TwitchStreamsPager) Reset() {
 	pager.offset = 0
 }

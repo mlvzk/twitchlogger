@@ -34,11 +34,11 @@ func main() {
 				break
 			}
 
-			if streamSet[stream.Channel.Id] {
+			if streamSet[stream.Channel.ID] {
 				continue
 			}
-			csvWriter.Write([]string{strconv.Itoa(stream.Channel.Id), stream.Channel.Name, strconv.Itoa(stream.Viewers)})
-			streamSet[stream.Channel.Id] = true
+			csvWriter.Write([]string{strconv.Itoa(stream.Channel.ID), stream.Channel.Name, strconv.Itoa(stream.Viewers)})
+			streamSet[stream.Channel.ID] = true
 		}
 		csvWriter.Flush()
 
