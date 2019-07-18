@@ -13,5 +13,5 @@ deploy:
     - twitch-channels
     - twitch-log
   on:
-    repo: mlvzk/twitch_logger
+    repo: mlvzk/twitchlogger
     tags: true
