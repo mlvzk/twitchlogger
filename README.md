@@ -13,12 +13,12 @@ You can connect `twitch-channels` and `twitch-log` by piping `twitch-channels` t
 
 ## Installation
 
-Download the executables from this repo's [Releases page](https://github.com/mlvzk/twitch_logger/releases) and put them in your $PATH
+Download the executables from this repo's [Releases page](https://github.com/mlvzk/twitchlogger/releases) and put them in your $PATH
 
 OR
 
 ```bash
-go get -u github.com/mlvzk/twitch_logger/...
+go get -u github.com/mlvzk/twitchlogger/...
 ```
 
 ## Examples

@@ -1,3 +1,3 @@
-module github.com/mlvzk/twitch_logger
+module github.com/mlvzk/twitchlogger
 
 go 1.12

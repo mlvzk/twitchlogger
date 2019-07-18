@@ -1,4 +1,4 @@
-package twitch_logger
+package twitchlogger
 
 import (
 	"encoding/json"

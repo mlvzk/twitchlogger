@@ -8,7 +8,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/mlvzk/twitch_logger"
+	"github.com/mlvzk/twitchlogger"
 )
 
 func main() {
@@ -18,7 +18,7 @@ func main() {
 	loop := flag.Bool("loop", false, "")
 	flag.Parse()
 
-	twitchStreamsPager := twitch_logger.NewTwitchStreamsPager(*language, *clientID)
+	twitchStreamsPager := twitchlogger.NewTwitchStreamsPager(*language, *clientID)
 
 	streamSet := make(map[int]bool)
 	csvWriter := csv.NewWriter(os.Stdout)
