@@ -1,4 +1,4 @@
-# twitch\_logger
+# twitchlogger
 
 Lightweight and minimal Twitch chat logger.
 It is able to log every live chat on twitch (at once) with very low CPU and memory usage.
